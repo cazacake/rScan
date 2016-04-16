@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+            <meta http-equiv="X-UA-Compatible" content="IE=edge">
+                <meta name="viewport" content="width=device-width, initial-scale=1">
+                    <title>TestingPage</title>
+
+                    <!-- FOR TESTING WEBSOCKET KEYVALUES -->
+                    <link href="Resources/dist/css/bootstrap.min.css" rel="stylesheet">
+                       </head>
+    <body>
+       <span id="messageText" class="reg">key-</span><br>
+       <span id="messageText2" class="reg">value-</span>
+        <h1><div id="messageText3">Server Output goes above!</div></h1>
+        <script src="Resources/jquery-2.1.3.min.js"></script>
+        <!-- change jquery link above to local and fix bootstrap link below-->
+        <script src="Resources/dist/js/bootstrap.min.js"></script>
+        <form id="submitForm"class="reg">
+            Server Message<br>
+        <input type="text" id="keyField" title="key" class="reg"></input>
+        <input type="text" id="textField" title="value"class="reg"></input>
+        <input type="submit" id="submitButton" value="Submit"class="reg"></input>
+        </form>
+
+        <br><br>
+        <div id="readDiv">
+        <form id="readForm">
+            Key<input type="text" id="readKeyField" title="key"class="reg"></input>->
+            <input type="text" id="readTextField" title="value"class="reg" ></input><br>
+            <input type="submit" id="readButton" value="Check KeyValue"class="reg"></input>
+            </form>
+            <button id="clear"class="reg">clear</button>
+        </div>
+  <script type="text/javascript" src="SocketController.js"></script>
+	<script type ="text/javascript">
+  var keyExceptions = new Array();
+  jQuery(function($) {
+    if (!("WebSocket" in window)) {
+      alert("Your browser does not support web sockets");
+    } else {
+      setup();
+    }
+    function setup() {
+      var host = "ws://localhost:8888/ws";
+      var socket = new WebSocket(host);
+      var $key = $("#keyField");
+      var $txt = $("#textField");
+      var $submitForm = $("#submitForm");
+      $submitForm.submit(function(event) {
+        event.preventDefault();
+        var key = $key.val();
+        var text = $txt.val();
+        var protoJson = {
+          "key" : key,
+          "value" : text,
+          "action" : "write",
+          "sendTo" : "#messageText3"
+        };
+        var sendFile = JSON.stringify(protoJson);
+        if (text == "") {
+          return;
+        }
+        keyExceptions[key] = "#messageText3";
+        socket.send(sendFile);
+        // $txt.val("");
+      });
+      var $readForm = $("#readForm");
+      $readForm.submit(function(event) {
+        event.preventDefault();
+        var key = $("#readKeyField").val();
+        var protoJson = {
+          "key" : key,
+          "action" : "read",
+          "sendTo" : "#readTextField"
+        };
+        var sendFile = JSON.stringify(protoJson);
+        socket.send(sendFile);
+      });
+
+      if (socket) {
+        socket.onopen = function() {
+        }
+        socket.onmessage = function(msg) {
+          // checks for sendTo, if no send to id of key
+          // it should in the future find the thing with the id ==key
+          // console.log(msg.data);
+          var data = JSON.parse(msg.data);
+          logConsole(data);
+          var value = data['value'];
+
+          var key = data['key'];
+          var sendTo = data['sendTo'];
+          var event = data['event'];
+          console.log("key-" + key + " is changed to " + value);
+          if (event == 'valChanged') {
+            sendTo = keyExceptions[key];
+            $(sendTo).text(value);
+          } else if (event == "read") {
+            $(sendTo).val(value);
+          }
+
+        }
+  socket.onclose = function() {
+                console.log("socket Closed");
+                setTimeout(function(){
+                  setup();
+                  }, 2000);
+                }
+
+      }
+      else {
+        console.log("invalid socket");
+      }
+    }
+  });
+
+  </script>
+    </body>
+</html>
