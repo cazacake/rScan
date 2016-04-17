@@ -1,7 +1,8 @@
+package src;
+
 import java.util.LinkedHashMap;
 
-
-	public class Userdata{		
+public class Userdata{		
 		
 		String username;					//name of reddit user
 		private int flagLevel=0;					//overall user rating

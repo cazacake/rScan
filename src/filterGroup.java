@@ -1,6 +1,5 @@
-import java.util.ArrayList;
+package src;
 import java.util.Map;
-
 
 public class filterGroup {
 	//list of subs to be searched for

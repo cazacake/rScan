@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<classpath>
+	<classpathentry kind="src" path=""/>
+	<classpathentry exported="true" kind="con" path="org.eclipse.pde.core.requiredPlugins"/>
+	<classpathentry exported="true" kind="lib" path="/Users/tanl/git/rScan/jackson-annotations-2.6.0.jar"/>
+	<classpathentry exported="true" kind="lib" path="/Users/tanl/git/rScan/jackson-core-2.6.1.jar"/>
+	<classpathentry exported="true" kind="lib" path="/Users/tanl/git/rScan/jackson-databind-2.6.1.jar"/>
+	<classpathentry exported="true" kind="lib" path="/Users/tanl/git/rScan/java_websocket.jar"/>
+	<classpathentry exported="true" kind="lib" path="/Users/tanl/git/rScan/jsoup-1.8.2.jar"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
+	<classpathentry kind="output" path="bin"/>
+</classpath>

@@ -1,5 +1,6 @@
-import java.util.TreeMap;
+package src;
 
+import java.util.TreeMap;
 
 public class MutableIntList {
 	TreeMap<String,MutableInt>mutableList;
