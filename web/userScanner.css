@@ -1,0 +1,62 @@
+.submitUsernameDiv{
+   margin: 25px;
+}
+form{
+   margin: 10px;
+}
+input{
+   margin: 1vmin;
+}
+.notConnectedSpan{
+  color: red;
+
+}
+.isConnectedSpan{
+  color: green;
+}
+.subDiv1{
+   border: 1px inset black;
+
+}
+.subDiv2{
+  width:40vw;
+   border: 1px inset black;
+   overflow: scroll;
+}
+#groupsListDiv div{
+   border: 2px inset black;
+   margin: 1vmin;
+   overflow-y: auto;
+
+}
+.filterElementsDiv{
+   z-index: -1;
+   height: 30vh;
+   width: 20vw;
+   border: 5px inset black;
+   border-radius: 2vmin;
+   overflow-y: auto;
+   text-align: left;
+}
+.active{
+   border-color: purple !important;;
+   border-style: solid !important;;
+   border-width:4px !important;;
+
+}
+.outputHeader{
+  font-size: 22px;
+  color: red;
+}
+.groupsListDiv{
+   z-index: -1;
+   height: 30vh;
+   width: 20vw;
+   border: 5px inset black;
+   border-radius: 2vmin;
+   overflow-y: auto;
+   text-align: left;
+}
+.groupsDiv{
+   display: flex;
+}
