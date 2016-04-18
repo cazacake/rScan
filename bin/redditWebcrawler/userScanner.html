@@ -1,0 +1,278 @@
+<!DOCTYPE html>
+<html  lang="en">
+<head>
+
+<meta charset="utf-8">
+  <link type="text/css" rel="stylesheet" href="userScanner.css"/>
+  	<title>UserScanner</title>
+  			<script src="Resources/d3/d3.js"></script>
+  			<script src="Resources/jquery-2.1.3.min.js"></script>
+  			<link href="Resources/dist/css/bootstrap.min.css" rel="stylesheet">
+  			<script src="Resources/dist/js/bootstrap.min.js"></script>
+  </head>
+<body>
+   <div class= "submitUsernameDiv" align="center">
+      <p id="returnTextField">
+         Enter a reddit username and select your filters to begin Scanning.
+         <br>
+         Filters are automatically saved
+         <br>
+         <span title="Patience(^-^)">Loading Pages Isn't Fast</span>
+      </p>
+      <form class="submitUsernameForm" id="submitUsernameForm">
+         <input type="text" id="usernameField" maxlength="40" placeholder="username"></input>
+         <input type="submit" id="UsernameSubmitButton" alt="submit" value="submit"></input>
+         <br>
+         Scan for edgelords <input id="doDefault" type="checkbox" checked></input>
+         <br>
+         <span>Max # of Pages </span><input type="number" id="maxPagesInput" name="quantity" min="1" max="30" value="5" placeholder="max number of pages">
+         <span class="notConnectedSpan">Not Connected</span>
+      </form>
+   </div>
+  <div class= "groupsDiv" align="center">
+      <div class="subDiv1">
+         <!--<select class="groupsList" id="filterGroupList">
+         </select>!-->
+
+         <span id="groupsDivConsole">Filters:</span>
+         <br>
+         <div class='groupsListDiv' id='groupsListDiv'>
+         </div>
+         <button class="toggleGroupActiveButton" id="toggleGroupActiveButton" style:"color:green">Toggle Active</button>
+         <br>
+         <form class="addfilterGroupForm" id="addfilterGroupForm">
+            <input type="text" id="filterGroupField" maxlength="25" placeholder="Name"></input>
+            <input type="submit" id="addFilterGroupSubmitButton" alt="New Filter" value="New Filter"></input>
+         </form>
+         <button class='button1' id="restoreDefaultSettingsButton">Restore Default Settings</button>
+      </div>
+      <div class="subDiv1" align="center">
+         <span id="filterElementsInfoSpan">Unamed Filter:0</span>
+         <div class="filterElementsDiv" id="filterElementsDiv">
+         </div>
+         <form class="addfilterElementForm" id="addfilterElementForm">
+            <span>Min # of instances</span>
+            <input type="number" id="minInstInput" name="minInst" min="1" max="10" value="4" placeholder="minimum number of instances">
+
+            <input type="text" id="filterElementField" maxlength="25" placeholder="Subreddit Name"></input>
+            <input type="submit" id="addFilterElementSubmitButton" alt="New Element" value="New Element"></input>
+         </form>
+         <button class="button1" id="deleteFilterGroupButton" >Delete Filter Group</button>
+
+      </div>
+      <div class="subDiv2">
+        <span class="outputHeader">Output</span>
+        <p id="OutputParagraph"></p>
+      </div>
+  </div>
+
+
+  <script type ="text/javascript" src="userScannerSocketController.js"></script>
+
+<script type="text/javascript">
+"use strict";
+   var filterGroupListElement=$("#filterGroupList");
+   var addfilterElementSubmitForm=$("#addfilterElementForm");
+   var addfilterGroupSubmitForm=$("#addfilterGroupForm");
+   var groupsDivConsole=$("#groupsDivConsole");
+   var filterElementsDiv=$('#filterElementsDiv');
+   var filterElementsInfoSpan=$("#filterElementsInfoSpan");
+   var minInstInput=$("#minInstInput");
+   var groupsListDiv=$("#groupsListDiv");
+   var filterGroup={
+      name:"F",
+      minInst:5,
+      subs:[]
+   };
+   var index=0;
+   var filterGroups=[];
+   var xmlhttp;
+
+   var defaultFilterGroups=[{name:"gamergate",minInst:5,active:true,
+   subs:["KotakuInAction","sjwhate","subredditcancer","KiAChatroom","KiACirclejerk","ShitGhaziSays"]}
+   ];
+    	$(document).ready(function(){
+
+             checkLocalStorageForStuff();       //getSavedGroups from localStorage to fill, send baisic userdata
+             $("#groupsListDiv div").click(function() {
+                 $("#groupsListDiv div").removeClass("active");
+                 $(this).addClass("active");
+                 index=$(this).index();
+                 groupsListDiv.trigger("change");
+             });
+             $("#groupsListDiv div").first().addClass("active");
+
+    	});
+      /*function findSelectedFilterGroup(){
+         var index=$('#groupsListDiv').index(".active");
+         console.log(index);
+         if(index==-1){
+
+         }
+         return index;
+      }*/
+    	function checkLocalStorageForStuff(){
+         if(localStorage.getItem("filterGroups")==null){
+            filterGroups=defaultFilterGroups;
+         }
+         else{
+            filterGroups=JSON.parse(localStorage.getItem('filterGroups'));
+            //$("#maxPagesInput").val(JSON.parse(localStorage.getItem('maxPagesInput')));
+         }
+         updateLists();
+      };
+      function updateLists(){
+         groupsListDiv.empty();
+         var filterGroupsLength=filterGroups.length;
+         for(var a=0;a<filterGroupsLength;a++){
+            var activeColor="white";
+            if(filterGroups[a].active){
+               activeColor="#99FF99";
+            }
+            else{
+               activeColor="#FF8484";
+            }
+            groupsListDiv.append(
+               "<div class=filterGroupSelectionDiv style=\'background-color:"+activeColor+";overflow:hidden;\'>"
+               +filterGroups[a].name+
+               ""+
+               "</div>"
+            );
+         }
+         if(index>filterGroupsLength){
+            index=filterGroupsLength-1;
+         }else if(filterGroupsLength==1){
+            index=0;
+         }
+         var s=$("#groupsListDiv div").eq(index).addClass("active");
+         //$('#groupsListDiv div').first().addClass('active');
+         //filterGroupListElement.first().prop("selected","true");
+         groupsListDiv.trigger("change");
+         $("#groupsListDiv div").click(function() {//needed to reapply the onclicks() for whatever reason
+            $("#groupsListDiv div").removeClass("active");
+            $(this).addClass("active");
+            index=$(this).index();
+            groupsListDiv.trigger("change");
+         });
+      }
+      minInstInput.on("change",function(event){
+         //var index=findSelectedFilterGroup();
+
+         filterGroups[index].minInst=minInstInput.val();
+      });
+      groupsListDiv.on("change",function(event){
+         //var index=findSelectedFilterGroup();
+         filterElementsDiv.empty();
+
+         var selectedData=filterGroups[index];
+         var selectedSubs=selectedData.subs;
+         var selectedDataSubsLength=selectedSubs.length;
+         filterElementsInfoSpan.text(selectedData.name+":"+selectedDataSubsLength);
+         for(var a=0;a<selectedDataSubsLength;a++){
+            filterElementsDiv.append("<div class='filterElement' id=D_"+selectedSubs[a]+">"
+            +"<button class='filterElementRemoveButton' onclick=removeFilterElement(\'"+selectedSubs[a]+"\',"+index+")>X</button>"
+            +selectedSubs[a]+
+            "<div>");
+         }
+         $("#minInstInput").val(selectedData.minInst);
+
+         $("select option[class=O_red]").css("background-color","red");
+         $("select option[class=O_green]").css("background-color","blue");
+
+         saveSettings();
+      });
+      function removeFilterElement(id,index){
+         //$("#D_"+id).remove();
+         var arrayIndex=filterGroups[index].subs.indexOf(id);
+         filterGroups[index].subs.splice(arrayIndex,1);
+         groupsListDiv.trigger("change");
+      }
+       addfilterGroupSubmitForm.submit(function(event){
+         event.preventDefault();
+
+         var newFilterGroupName=$("#filterGroupField").val();
+         if(newFilterGroupName.length<=0){
+            groupsDivConsole.text("invalid group name");
+            return;
+         }
+         $("#filterGroupField").val("");
+         filterGroups.push({name:newFilterGroupName,minInst:5,active:true,subs:[]});
+
+         ///asdfafo;jaeoijefoijaeoi;jefioj;e
+         updateLists();
+         groupsListDiv.trigger("change");
+
+      });
+      addfilterElementSubmitForm.submit(function(event){
+         //When the addFILTERELEMENT form is submitted to add a ELEMENT to a filter
+          event.preventDefault();
+          //var index=findSelectedFilterGroup();
+
+          var newName=$('#filterElementField').val();
+          if(newName.length<1){
+             groupsDivConsole.text("invalid sub name");
+            return;
+          }
+          if( filterGroups[index].subs.indexOf(newName)!=-1){
+                groupsDivConsole.text("duplicate sub");
+                return;
+          }
+          filterGroups[index].subs.push(newName);
+          groupsListDiv.trigger("change");
+
+      });
+      $('#restoreDefaultSettingsButton').click(function(event){
+         filterGroups=$.extend(true,[], defaultFilterGroups);
+         updateLists();
+         $("#groupsListDiv div").first().addClass("active");
+         groupsListDiv.trigger("change");
+      });
+      $('#deleteFilterGroupButton').click(function(event){
+            //var index=findSelectedFilterGroup();
+            filterGroups.splice(index,1);
+            updateLists();
+            groupsListDiv.trigger("change");
+      });
+      $("#toggleGroupActiveButton").click(function(event){
+         //var index=findSelectedFilterGroup();
+         var active=filterGroups[index].active;
+         if(active){
+            filterGroups[index].active=false;
+         }
+         else{
+            filterGroups[index].active=true;
+         }
+         groupsListDiv.empty();
+         updateLists();
+      });
+      function saveSettings(){
+         localStorage.setItem("filterGroups",JSON.stringify(filterGroups));
+         //localStorage.setItem("maxPages",JSON.stringify($("#maxPagesInput").val()));
+      }
+      $('#submitUsernameForm').submit(function(event){
+         event.preventDefault();
+         if(socket){
+         var username=$('#usernameField').val();
+
+         var indexOf=username.indexOf("reddit.com/user/");
+         if(indexOf!=-1){
+            username=username.substring(indexOf+"reddit.com/user/".length);
+         }
+         var maxPages=$("#maxPagesInput").val();
+         var submittedFilterGroups=[];
+         var filterGroupsLength=filterGroups.length;
+         for(var a=0;a<filterGroupsLength;a++){
+            if(filterGroups[a].active){
+               submittedFilterGroups.push(filterGroups[a]);
+            }
+         }
+         var doDefault=document.getElementById("doDefault").checked;
+         var submittedPackage={'username':username,"doDefault":doDefault,'maxPages':maxPages,
+         'filterGroups':submittedFilterGroups};
+         Socket.sendJsonValue(submittedPackage);
+        }
+        });
+
+</script>
+</body>
+</html>
