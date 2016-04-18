@@ -1,1 +1,1 @@
-worker: sh target/bin/redditWebSocketServer
+worker: sh target/bin/serverWorker
