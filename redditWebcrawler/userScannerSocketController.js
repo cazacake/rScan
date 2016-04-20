@@ -2,7 +2,7 @@ var socket;
 var Socket={						//the socket object
 	setup:function (){
 				logConsole("setup Called");
-				var host = "wss://fierce-bayou-33827.herokuapp.com/rScan";
+				var host = "wss://fierce-bayou-33827.herokuapp.com/";
 				socket = new WebSocket(host);
 				if (socket) {
 					socket.onopen = function() {

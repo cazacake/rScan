@@ -122,11 +122,12 @@ public class redditWebSocketServer extends WebSocketServer {
 
     @Override
     public void onError(WebSocket conn, Exception ex) {
+    	System.out.println(ex.getMessage());
         System.err.println("an error occured on connection " + conn.getRemoteSocketAddress()  + ":" + ex);
     }
 
     public static void main(String[] args) {
-        String host = "rScan";
+        String host = "";
         int port = 5000;
 
         WebSocketServer server = new redditWebSocketServer(new InetSocketAddress(host, port));
