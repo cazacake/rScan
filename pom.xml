@@ -58,9 +58,9 @@
       <plugin>
 <groupId>org.codehaus.mojo</groupId>
 <artifactId>appassembler-maven-plugin</artifactId>
-<version>${appassembler.version}</version>
+<version>1.10</version>
 <configuration>
-<assembleDirectory>target/v1/a1/</assembleDirectory>
+<assembleDirectory>target</assembleDirectory>
 <programs>
 <program>
 <mainClass>redditWebSocketServer.Main</mainClass>
