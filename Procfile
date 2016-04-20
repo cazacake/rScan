@@ -1,1 +1,1 @@
-worker: sh target/bin/serverWorker
+web: java -cp target/classes/:target/dependency/* redditWebSocketServer
