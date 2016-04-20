@@ -1,1 +1,1 @@
-web: java -cp $JAVA_OPTS target.classes.v1.a1.redditWebSocketServer
+web: java $JAVA_OPTS -cp target/classes/:target/dependency/* v1.a1.redditWebSocketServer
