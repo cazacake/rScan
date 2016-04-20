@@ -17,6 +17,7 @@ public class Userdata{
 
 		public Userdata(String username){
 			this.username=username;
+			LinkedHashMap <String,MutableInt>subredditHits=new LinkedHashMap();
 		}
 		public LinkedHashMap getDataMap(boolean doDefault){
 			LinkedHashMap returnMap = new LinkedHashMap();
