@@ -126,7 +126,7 @@ public class redditWebSocketServer extends WebSocketServer {
     }
 
     public static void main(String[] args) {
-        String host = "";
+        String host = "rScan";
         int port = 5000;
 
         WebSocketServer server = new redditWebSocketServer(new InetSocketAddress(host, port));
