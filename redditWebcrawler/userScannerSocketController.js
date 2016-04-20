@@ -2,7 +2,7 @@ var socket;
 var Socket={						//the socket object
 	setup:function (){
 				logConsole("setup Called");
-				var host = "wss://enigmatic-hollows-35314.herokuapp.com:5000/";
+				var host = "wss://enigmatic-hollows-35314.herokuapp.com/rScan";
 				socket = new WebSocket(host);
 				if (socket) {
 					socket.onopen = function() {
