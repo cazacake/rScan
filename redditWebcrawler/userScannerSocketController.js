@@ -2,7 +2,7 @@ var socket;
 var Socket={						//the socket object
 	setup:function (){
 				logConsole("setup Called");
-				var host = "ws://localhost:8887/ws";
+				var host = "ws://arcane-caverns-42414.herokuapp.com:5000";
 				socket = new WebSocket(host);
 				if (socket) {
 					socket.onopen = function() {
