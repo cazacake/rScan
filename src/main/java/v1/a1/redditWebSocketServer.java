@@ -127,8 +127,8 @@ public class redditWebSocketServer extends WebSocketServer {
     }
 
     public static void main(String[] args) {
-        String host = "";
-        int port = 5000;
+        String host = "0.0.0.0";
+        int port = Integer.parseInt(System.getenv("PORT"));
     
         WebSocketServer server = new redditWebSocketServer(new InetSocketAddress(host, port));
         server.run();
